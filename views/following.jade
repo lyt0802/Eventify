@@ -1,0 +1,13 @@
+extends layout
+
+block title
+    | Following
+
+block content
+    div(class='container')
+      h1 Following Page
+      //-h1= user
+      for following in user.following
+            a(href='/profile/' + following._id)
+                  h4= following.firstName + ' ' + following.lastName
+            br

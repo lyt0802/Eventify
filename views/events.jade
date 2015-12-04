@@ -1,0 +1,98 @@
+extends layout
+
+block title
+    | Events
+
+block content
+    a(href='/profile/'+user._id, class='prof') Go to My Profile
+    a(href='/logout', class='logout') Logout
+    div(class='container')
+        h1(class='fullname') Hello #{user.firstName} #{user.lastName}~!
+        br
+        form(action='/search', method='POST',class = 'form', id='searchForm')
+            input(type='text', name='search', id='searchTextBox')
+            input(type="submit", class="post_search", value="Search for Users!")
+
+        div(class='searchResults')
+        br
+        h1 List of events
+        for event in events
+            - function parseDate(eventDate) {
+                - if (!eventDate) {return "an unknown date.";}
+                - return eventDate.toLocaleString() + " (in " + dateDiffFromNow(eventDate) + ")";
+            - }
+            - function dateDiffFromNow(eventDate) {
+                - var dayTime = 1000*60*60*24;  /*time of day in milliseconds*/
+                - var dateLocalZone = new Date(eventDate);
+                - var currdate = new Date();
+                - var diff = dateLocalZone-currdate
+                - diff = diff/dayTime
+                - if (diff <0) return "Already begun"
+                - if (diff<1) {
+                    - diff = diff*24;
+                    - if (diff <1) {
+                        - diff = diff * 60
+                        - return Math.floor(diff) + " minute(s)"
+                    - } else return Math.floor(diff) + " hour(s)"
+                - } else if (diff > 7) {
+                    - return Math.round(diff/7) + " week(s)"
+                - } else return Math.floor(diff) + " day(s)"
+            - }
+            a(href='/event/'+event._id, id=event._id) #{event.title} hosted by #{event.host.firstName} at #{event.location} at #{parseDate(event.date)}  
+            br
+
+block script
+  script.
+    $(document).ready(function() {
+        $('#searchForm').submit(function(e) {
+            console.log($('form').serializeArray())
+            e.preventDefault();
+            var search_event = $.ajax({
+              url:'/search',
+              type:'post',
+              data: { search: $('form').serializeArray()}
+            })
+            .done(function(data,status){
+              console.log(data.users)//$(".searchResults").append('<p>' + data.users + '</p>');
+              for(var i = 0; i < data.users.length; i++){
+                //print out link to person's profile.
+                $(".searchResults").append('<p><a href="/profile/' + data.users[i]._id + '">' + data.users[i].lastName + " " + data.users[i].firstName + "</p>");
+              }
+            })
+            .error(function(data,status){
+              alert("there was an error in search");
+            })
+          })
+        
+        $('#searchTextBox').on({
+            keydown: function(event) {
+                if (event.which === 32) return false;
+            },
+            change: function() {
+                this.value = this.value.replace('/\s/g', '');
+            }
+        });
+        
+        function parseDate(eventDate) {
+            if (eventDate = null) return "an unknown date."
+            return eventDate.toLocaleString() + "(in ' dateDiffFromNow(eventDate) ')";
+        }
+            
+        function dateDiffFromNow(eventDate) {
+            var dayTime = 1000*60*60*24;  /*time of day in milliseconds*/
+            var dateLocalZone = new Date(eventDate);
+            var currdate = new Date();
+            var diff = dateLocalZone-currdate
+            diff = diff/dayTime
+            if (diff <0) return "Already begun"
+            if (diff<1) {
+                diff = diff*24;
+                if (diff <1) {
+                    diff = diff * 60
+                    return Math.floor(diff) + " minute(s)"
+                } else return Math.floor(diff) + " hour(s)"
+            } else if (diff > 7) {
+                return Math.round(diff/7) + " week(s)"
+            } else return Math.floor(diff) + " day(s)"
+        }
+    });

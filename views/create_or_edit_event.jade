@@ -1,0 +1,32 @@
+extends layout
+
+block title
+    | Home
+
+mixin alert(message)
+    div(class='alert alert-danger')
+        button(type='button', class='close', data-dismiss='alert')
+            span &times;
+        p= message
+
+block content
+  div(class='container')
+    if event == null
+      form(action='/create_event', method='POST', class='form')
+        input(type='text', name='title', placeholder='Title', class='form-control', value='')
+        input(type='text', name='location', placeholder='Location', class='form-control', value='')
+        input(type="datetime-local", name="date", class='form-control')
+        input(type='text', name='description', placeholder='description', class='form-control', value='')
+        button(type='submit', class='btn btn-primary') Create Event
+        button(type='reset', class='btn btn-default') Reset
+    else
+      form(action='/edit_event_final', method='POST', class='form')
+        input(type='text', name='title', placeholder='Title', class='form-control', value='#{event.title}')
+        input(type='text', name='location', placeholder='Location', class='form-control', value='#{event.location}')
+        input(type="datetime-local", name="date", class='form-control', value='#{event.date}')
+        input(type='text', data-role='tagsinput', name='tags', value='',  placeholder='Tags')
+        input(type='text', name='description', placeholder='description', class='form-control', value='#{event.description}')
+        input(type='hidden',name='edit_id', value='#{event._id}')
+        button(type='submit', class='btn btn-primary') Edit Event
+        button(type='reset', class='btn btn-default') Reset
+

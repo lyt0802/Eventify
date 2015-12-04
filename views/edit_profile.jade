@@ -1,0 +1,21 @@
+extends layout
+
+block title
+    | Edit Profile
+
+
+block content
+  div(class='container')
+    h1 Edit Profile
+    form(action='/save_edit_profile', method='POST', class='form')
+      h4 First Name
+      input(type='text', name='first_name', placeholder='First Name', class='form-control', value='#{user.firstName}')
+      h4 Last Name
+      input(type='text', name='last_name', placeholder='Last Name', class='form-control', value='#{user.lastName}')
+      h4 Email
+      input(type='text', name='email', placeholder='Email', class='form-control', value='#{user.email}')
+      h4 Interests (Tags)
+      input(type='text', data-role='tagsinput', name='tags', value='',  placeholder='Tags')
+      input(type='hidden',name='user_id', value='#{user._id}')
+      button(type='submit', class='btn btn-primary') Save
+      button(type='reset', class='btn btn-default') Reset

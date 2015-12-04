@@ -1,0 +1,69 @@
+extends layout
+
+block title
+    | Event
+
+block content
+  a(href='/profile', class='prof') Go to My Profile
+    //div #{event}
+    //div #{user}
+  div(class='container')
+    h1(class='title') #{event.title}
+    h2 Location: #{event.location}
+    - function parseDate(eventDate) {
+      - if (!eventDate) {return "Unknown date.";}
+      - return eventDate.toLocaleString();
+    - }
+    h2 Date: #{parseDate(event.date)}
+    h2 Tags:
+    div(id='tags')
+    h2 Host: 
+      a(href='/profile/'+event.host._id) #{event.host.firstName} #{event.host.lastName}
+
+    - var attendent = false
+    - var event_host = false
+    h3 List of Attendees:
+    for attendee in event.attenders
+      h4 #{attendee.firstName} #{attendee.lastName}
+      if attendee.id == user.id
+        - attendent = true
+
+    if user.id == event.host.id
+      - event_host = true
+    else
+      - event_host = false
+    if event_host == true
+      form(action='/edit_event', method='POST')
+        input(type='hidden',name='edit_id', value='#{event._id}')
+        button(type='submit', class='btn btn-default') Edit Event
+      form(action='/delete_event', method='POST')
+        input(type='hidden',name='del_id', value='#{event._id}')
+        button(type='submit', class='btn btn-danger') Delete Event
+    
+    if attendent == false
+      form(action='/attend', method='POST')
+        input(type='hidden',name='_id', value='#{event._id}')
+        button(type='submit', class='btn btn-success') Attend
+
+    if attendent == true && event_host == false
+      form(action='/unattend', method='POST')
+        input(type='hidden',name='un_id', value='#{event._id}')
+        button(type='submit', class='btn btn-danger') Unattend
+    br
+    button(onclick="myfunction()", class='btn btn-primary') Open the Event Chat Room!
+    
+block script
+    script.
+      var this_event = !{JSON.stringify(event)}
+      console.log(this_event);
+      for( var i = 0; i < this_event.tags.length; i++){
+        if(this_event.tags[i] != ''){
+          $('#tags').append("<span> " + this_event.tags[i] + ", </span>");
+        }
+      }
+      function myfunction() {
+        window.open('.././event_chat_room/' + this_event._id);
+        //window.open("http://eventify-test.herokuapp.com/event_chat_room/"+this_event._id);
+      }
+
+      

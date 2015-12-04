@@ -1,0 +1,17 @@
+extends layout
+
+block title
+    | Hosting
+
+block content
+    a(href='/profile/'+user._id, class='prof') Go to My Profile
+    div(class='container')
+        h1 Hosting List Page
+        //-h1= user
+    
+        for event in user.hosting
+            //-todolater: list out followers as links to their profile
+            //-img(src='#{follower.profilePicture.url}', height=200,width=200, class='img-circle', id='profilePicture')
+            a(href='/event/' + event._id)
+                h4= event.title + ' ' + event.location
+            br

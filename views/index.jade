@@ -1,0 +1,50 @@
+extends layout
+
+block title
+    | Home
+
+mixin alert(message)
+    div(class='alert alert-danger')
+        button(type='button', class='close', data-dismiss='alert')
+            span &times;
+        p= message
+
+block content
+    div(class='container')
+        h1(class='title') Eventify
+        div(class='well')
+            if userexists != ''
+                +alert(userexists)
+            else if inexistentEmail != ''
+                +alert(inexistentEmail)
+            else if wrongPassword != ''
+                +alert(wrongPassword)
+            else if passwordmismatch != ''
+                +alert(passwordmismatch)
+            else if verified != ''
+                div(class='alert alert-success')
+                    button(type='button', class='close', data-dismiss='alert')
+                        span &times;
+                    p= verified
+
+            ul(class='nav nav-tabs')
+                li(class='active')
+                    a(href='#login', data-toggle='tab') Login
+                li
+                    a(href='#signup', data-toggle='tab') Signup
+            div(class='tab-content')
+                div(id='login', class='tab-pane fade in active')
+                    form(action='/login', method='POST', class='form')
+                        input(type='email', name='email', placeholder='Email', class='form-control')
+                        input(type='password', name='password', placeholder='Password', class='form-control')
+                        button(type='submit', class='btn btn-primary') Login
+                        button(type='reset', class='btn btn-default') Reset
+                div(id='signup', class='tab-pane fade')
+                    form(action='/signup', method='POST', class='form')
+                        input(type='text', name='firstName', placeholder='First Name', class='form-control')
+                        input(type='text', name='lastName', placeholder='Last Name', class='form-control')
+                        input(type='email', name='email', placeholder='Email', class='form-control')
+                        input(type='password', name='password', placeholder='Password', class='form-control')
+                        input(type='password', name='confirmationPassword', placeholder='Confirm Password', class='form-control')
+                        button(type='submit', class='btn btn-success') Sign Up
+                        button(type='reset', class='btn btn-default') Reset
