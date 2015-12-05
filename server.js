@@ -55,8 +55,8 @@ app.get('/logout', function(req, res) {
 });
 
 app.post('/search/', app.common.isLoggedIn, function(req, res) {
-    console.log(req.body.search);
-    if (req.body.search === '') {
+    console.log(req.body.search[0].value);
+    if (req.body.search[0].value === '') {
         User.find({ _id: { $nin: [req.user._id] } })
             //.select('email')
             .exec(function(err, users) {
@@ -64,7 +64,7 @@ app.post('/search/', app.common.isLoggedIn, function(req, res) {
                 else res.send({ users: users });
             });
     } else {
-        var search = req.body.search
+        var search = req.body.search[0].value
         console.log(search);
         User.find({
             $or: [
@@ -92,7 +92,7 @@ app.get('/profile', app.common.isLoggedIn, function(req,res){
         .select('email firstName lastName hosting attending attended followers following tags')
         //.populate('hosting attending attended')
         .exec(function(err, user) {
-            res.render('profile.jade', {user: user});
+            res.render('profile.jade', {user: user, other_user: 0});
     });
 });
 
@@ -276,8 +276,11 @@ function determine_final(events, attending_num_list, event_compatibility, time_t
     var attending_num = attending_num_list[event_id]
     var event_comp = event_compatibility[event_id]
     var time_till = time_to_events[event_id]
+    var result =0;
     
-    var result = 3*attending_num + 20*event_comp + (365 - Math.abs(time_till)) * 0.33
+    if(attending_num > 26) {attending_num = 26}
+    if(time_till< 0) {result = 0;} else
+    {result = 3*attending_num + 100*event_comp + (365 - Math.abs(time_till)) * 0.33;}
     
     final_results[event_id] = result
   }
@@ -286,7 +289,7 @@ function determine_final(events, attending_num_list, event_compatibility, time_t
   for (var i = 0; i < events.length; i++){
     var event_id = events[i]._id.toString()
     console.log(final_results[event_id])
-    if (final_results[event_id] < 0 || final_results[event_id] > 300){
+    if (final_results[event_id] <= 0 || final_results[event_id] > 300){
       var index = i
       ret_val.splice(index, 1);
     }
@@ -327,7 +330,12 @@ function calculateEventCompatibility(events, user){
       }
     }
     var sum_tags_count = events[i].tags.length + user.tags.length
-    event_user_num_similar_tags[curr_event._id.toString()] = tag_count/(sum_tags_count-tag_count);
+    if(sum_tags_count - tag_count != 0){
+      event_user_num_similar_tags[curr_event._id.toString()] = tag_count/(sum_tags_count-tag_count);
+    } else {
+      event_user_num_similar_tags[curr_event._id.toString()] = 1
+    }
+      
   }
   console.log(event_user_num_similar_tags);
   return event_user_num_similar_tags
@@ -365,17 +373,15 @@ function calculateFollowingFollower(events, user){
           count_followers++
         }
       }
-      event_followers[curr_event._id.toString()] = count_followers
-      
+
       //check following
       for(var n = 0; n < user.following.length; n++){
         if(user.following[n].toString() === attendent){
           count_following++
         }
       }
-      event_following[curr_event._id.toString()] = count_following
       //sum it up.
-      sum_events[curr_event._id.toString()] = count_following + count_followers
+      sum_events[curr_event._id.toString()] = (count_following*1.2) + (count_followers*0.8)
     }
 
   }

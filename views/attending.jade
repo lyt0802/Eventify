@@ -5,12 +5,13 @@ block title
 
 block content
     a(href='/profile/'+user._id, class='prof') Go to My Profile
+    a(href='/logout', class='logout') Logout
     div(class='container')
-        h1 Attending List Page
+        h1(class='title') Attending List Page
         //-h1= user
         for event in user.attending
             //-todolater: list out followers as links to their profile
             //-img(src='#{follower.profilePicture.url}', height=200,width=200, class='img-circle', id='profilePicture')
             a(href='/event/' + event._id)
-                h4= event.title + ' ' + event.location
+                h4= event.title + ' at ' + event.location
             br

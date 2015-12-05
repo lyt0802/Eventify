@@ -9,37 +9,40 @@ block content
     div(class='container')
         h1(class='fullname') Hello #{user.firstName} #{user.lastName}~!
         br
-        form(action='/search', method='POST',class = 'form', id='searchForm')
-            input(type='text', name='search', id='searchTextBox')
-            input(type="submit", class="post_search", value="Search for Users!")
+        form(action='/search', method='POST',class = 'form-inline', id='searchForm')
+            input(type='text', name='search', id='searchTextBox', class='form-control')
+            input(type="submit", class="post_search", value="Search for Users!", class='btn btn-primary')
 
         div(class='searchResults')
         br
         h1 List of events
-        for event in events
-            - function parseDate(eventDate) {
-                - if (!eventDate) {return "an unknown date.";}
-                - return eventDate.toLocaleString() + " (in " + dateDiffFromNow(eventDate) + ")";
-            - }
-            - function dateDiffFromNow(eventDate) {
-                - var dayTime = 1000*60*60*24;  /*time of day in milliseconds*/
-                - var dateLocalZone = new Date(eventDate);
-                - var currdate = new Date();
-                - var diff = dateLocalZone-currdate
-                - diff = diff/dayTime
-                - if (diff <0) return "Already begun"
-                - if (diff<1) {
-                    - diff = diff*24;
-                    - if (diff <1) {
-                        - diff = diff * 60
-                        - return Math.floor(diff) + " minute(s)"
-                    - } else return Math.floor(diff) + " hour(s)"
-                - } else if (diff > 7) {
-                    - return Math.round(diff/7) + " week(s)"
-                - } else return Math.floor(diff) + " day(s)"
-            - }
-            a(href='/event/'+event._id, id=event._id) #{event.title} hosted by #{event.host.firstName} at #{event.location} at #{parseDate(event.date)}  
-            br
+        if events.length != 0
+            for event in events
+                - function parseDate(eventDate) {
+                    - if (!eventDate) {return "an unknown date.";}
+                    - return eventDate.toLocaleString() + " (in " + dateDiffFromNow(eventDate) + ")";
+                - }
+                - function dateDiffFromNow(eventDate) {
+                    - var dayTime = 1000*60*60*24;  /*time of day in milliseconds*/
+                    - var dateLocalZone = new Date(eventDate);
+                    - var currdate = new Date();
+                    - var diff = dateLocalZone-currdate
+                    - diff = diff/dayTime
+                    - if (diff <0) return "Already begun"
+                    - if (diff<1) {
+                        - diff = diff*24;
+                        - if (diff <1) {
+                            - diff = diff * 60
+                            - return Math.floor(diff) + " minute(s)"
+                        - } else return Math.floor(diff) + " hour(s)"
+                    - } else if (diff > 7) {
+                        - return Math.round(diff/7) + " week(s)"
+                    - } else return Math.floor(diff) + " day(s)"
+                - }
+                a(href='/event/'+event._id, id=event._id) #{event.title} hosted by #{event.host.firstName} at #{event.location} at #{parseDate(event.date)}  
+                br
+        else 
+            h3 No Events could be Recommended.
 
 block script
   script.

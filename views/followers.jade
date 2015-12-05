@@ -4,8 +4,10 @@ block title
     | Followers
 
 block content
+    a(href='/profile/'+user._id, class='prof') Go to My Profile
+    a(href='/logout', class='logout') Logout
     div(class='container')
-      h1 Followers Page
+      h1(class='title') People Following Me
       //-h1= user
 
       for follower in user.followers

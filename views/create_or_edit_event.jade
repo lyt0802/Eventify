@@ -10,8 +10,11 @@ mixin alert(message)
         p= message
 
 block content
+  a(href='/profile/', class='prof') Go to My Profile
+  a(href='/logout', class='logout') Logout
   div(class='container')
     if event == null
+      h1(class='title') Create New Event
       form(action='/create_event', method='POST', class='form')
         input(type='text', name='title', placeholder='Title', class='form-control', value='')
         input(type='text', name='location', placeholder='Location', class='form-control', value='')
@@ -20,6 +23,7 @@ block content
         button(type='submit', class='btn btn-primary') Create Event
         button(type='reset', class='btn btn-default') Reset
     else
+      h1(class='title') #{event.title}
       form(action='/edit_event_final', method='POST', class='form')
         input(type='text', name='title', placeholder='Title', class='form-control', value='#{event.title}')
         input(type='text', name='location', placeholder='Location', class='form-control', value='#{event.location}')

@@ -4,6 +4,8 @@ block title
   | profile
 
 block content
+  if other_user == 1
+    a(href='/profile/'+this_user._id, class='prof') Go to My Profile
   a(href='/logout', class='logout') Logout
   div(class='container')
     h1(class='fullname') #{user.firstName} #{user.lastName}
@@ -14,11 +16,12 @@ block content
         h3 Edit Your Profile!
     div(class='row')
       div(class='col-sm-6')
-        a(href='/create_new_event')
-          h3 Create and host a new event
-        a(href='/events')
-          h3 Look for Events
-        br
+        if(other_user == 0)
+          a(href='/create_new_event')
+            h3 Create and host a new event
+          a(href='/events')
+            h3 Look for People or Events
+          br
         a(href='/attending/'+user._id)
           h4 Events Attending: #{user.attending.length}
         a(href='/hosting/'+user._id)
@@ -31,7 +34,7 @@ block content
     if other_user == 1 && follower == false
         form(action='/follow', method='POST')
             input(type='hidden',name='id', value='#{user._id}')
-            button(type='submit') Follow
+            button(type='submit', class='btn btn-success') Follow this user
 
 block script
   script.
