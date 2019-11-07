@@ -19,7 +19,7 @@
     "method-override": "^2.3.5",
     "mongo": "^0.1.0",
     "mongodb": "^2.0.46",
-    "mongoose": "^4.1.11",
+    "mongoose": "^5.7.8",
     "morgan": "^1.6.1",
     "multer": "^1.0.6",
     "nodemailer": "^1.8.0",
